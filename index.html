@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto News Hub — 每日热点 & 深度解读</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f6fa; color: #333; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 12px; margin-bottom: 30px; }
+  header h1 { font-size: 2rem; margin-bottom: 10px; }
+  header p { opacity: 0.9; font-size: 1rem; }
+  .section { background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .section h2 { font-size: 1.3rem; margin-bottom: 16px; color: #444; border-left: 4px solid #667eea; padding-left: 12px; }
+  .trend-list { list-style: none; }
+  .trend-list li { padding: 12px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
+  .trend-list li:last-child { border-bottom: none; }
+  .trend-list a { color: #333; text-decoration: none; font-size: 1rem; flex: 1; }
+  .trend-list a:hover { color: #667eea; }
+  .heat { color: #e74c3c; font-size: 0.85rem; margin-left: 12px; white-space: nowrap; }
+  .articles-grid { display: grid; gap: 16px; }
+  .article-card { border: 1px solid #eee; border-radius: 8px; padding: 16px; transition: box-shadow 0.2s; }
+  .article-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .article-card h3 { font-size: 1.1rem; margin-bottom: 8px; color: #333; }
+  .article-card .meta { color: #999; font-size: 0.85rem; }
+  .article-card a { color: #667eea; text-decoration: none; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-right: 6px; }
+  .badge-zhihu { background: #0084ff; color: white; }
+  .badge-weibo { background: #e6162d; color: white; }
+  .badge-article { background: #667eea; color: white; }
+  .cta { text-align: center; padding: 30px; background: #f8f9ff; border-radius: 12px; margin-top: 20px; }
+  .cta p { margin-bottom: 12px; color: #666; }
+  .btn { display: inline-block; background: #667eea; color: white; padding: 10px 24px; border-radius: 6px; text-decoration: none; font-size: 0.95rem; }
+  .btn:hover { background: #5a6fd6; }
+  footer { text-align: center; padding: 30px; color: #999; font-size: 0.85rem; }
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.5rem; }
+    .container { padding: 12px; }
+    .section { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🔥 Auto News Hub</h1>
+    <p>每日热点自动抓取 + AI 深度解读 | 零代码内容工厂</p>
+  </header>
+
+  <div class="section">
+    <h2>📰 知乎热榜</h2>
+    <ul class="trend-list">
+      <!-- ZHIHU_START -->
+      <li style="color:#999;">热点加载中...请等待每日自动更新（北京时间早8点）</li>
+      <!-- ZHIHU_END -->
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>🔥 微博热搜</h2>
+    <ul class="trend-list">
+      <!-- WEIBO_START -->
+      <li style="color:#999;">热点加载中...请等待每日自动更新（北京时间早8点）</li>
+      <!-- WEIBO_END -->
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>📝 原创文章</h2>
+    <div class="articles-grid" id="articles">
+      <div class="article-card">
+        <h3>🚀 开始你的第一篇内容</h3>
+        <p class="meta">还没有文章？从上方热点挑一个话题，让我帮你写！</p>
+        <a href="https://github.com/hill520-git/auto-news-hub#readme" target="_blank">查看操作指南 →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <p>💡 每天 10 分钟：挑热点 → 让我写稿 → 多平台发布 → 赚流量收益</p>
+    <a class="btn" href="https://github.com/hill520-git/auto-news-hub/tree/main/articles" target="_blank">+ 发布新文章</a>
+  </div>
+
+  <footer>
+    <p>Auto News Hub | 由 hill520-git 运营 | 热点数据每日自动更新</p>
+  </footer>
+</div>
+
+<script>
+// 动态加载文章列表
+async function loadArticles() {
+  try {
+    const resp = await fetch('articles/index.json');
+    const articles = await resp.json();
+    const container = document.getElementById('articles');
+    if (articles.length > 0) {
+      container.innerHTML = articles.map(a => `
+        <div class="article-card">
+          <span class="badge badge-article">原创</span>
+          <h3><a href="articles/${a.file}">${a.title}</a></h3>
+          <p class="meta">${a.date} · 阅读约 ${a.readTime || '3'} 分钟</p>
+        </div>
+      `).join('');
+    }
+  } catch (e) {
+    console.log('暂无文章');
+  }
+}
+loadArticles();
+</script>
+</body>
+</html>
